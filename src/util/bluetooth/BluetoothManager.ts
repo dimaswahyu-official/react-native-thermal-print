@@ -1,6 +1,6 @@
 import { BluetoothManager } from '@ccdilan/react-native-bluetooth-escpos-printer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from "react-native";
+import {Alert, PermissionsAndroid} from 'react-native';
 
 // Connect to Bluetooth device
 export const connectBluetoothDevice = async (device: any) => {
@@ -14,7 +14,6 @@ export const connectBluetoothDevice = async (device: any) => {
         console.log(`Attempting to connect to device at address: ${address}`);
         await BluetoothManager.connect(address); // Connect to the Bluetooth device
         await AsyncStorage.setItem('connectedDeviceAddress', address); // Save the connected address
-
         console.log(`Connected to ${device.name}`);
         return address;
     } catch (error: any) {
@@ -23,6 +22,41 @@ export const connectBluetoothDevice = async (device: any) => {
         throw new Error('Failed to connect to the printer.');
     }
 };
+
+// export const requestBluetoothPermissions = async () => {
+//   try {
+//     // Request BLUETOOTH_CONNECT and BLUETOOTH_SCAN permissions
+//     const grantedConnect = await PermissionsAndroid.request(
+//       PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+//       {
+//         title: "Bluetooth Permission",
+//         message: "This app needs access to Bluetooth to scan and connect to devices.",
+//         buttonPositive: "OK",
+//         buttonNegative: "Cancel",
+//       }
+//     );
+//
+//     const grantedScan = await PermissionsAndroid.request(
+//       PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+//       {
+//         title: "Bluetooth Scan Permission",
+//         message: "This app needs access to scan Bluetooth devices.",
+//         buttonPositive: "OK",
+//         buttonNegative: "Cancel",
+//       }
+//     );
+//
+//     if (grantedConnect === PermissionsAndroid.RESULTS.GRANTED && grantedScan === PermissionsAndroid.RESULTS.GRANTED) {
+//       console.log("Bluetooth permissions granted");
+//     } else {
+//       console.log("Bluetooth permissions denied");
+//       Alert.alert('Bluetooth Permission Denied', 'The app cannot scan or connect to Bluetooth devices.');
+//     }
+//   } catch (err) {
+//     console.warn(err);
+//   }
+// };
+
 
 // Disconnect from Bluetooth device
 export const disconnectBluetoothDevice = async () => {

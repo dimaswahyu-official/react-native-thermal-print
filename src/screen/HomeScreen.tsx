@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, TextInput, Button, FlatList, StyleSheet, Platform, PermissionsAndroid, Alert} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, Item } from '../../App';
 
@@ -10,6 +10,34 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
   const [items, setItems] = useState<Item[]>([]);
+
+  const requestPermissions = async () => {
+    try {
+
+      if (Platform.OS === 'android' && Platform.Version >= 31) {
+        const granted = await PermissionsAndroid.requestMultiple([
+          PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+          PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        ]);
+
+        const allGranted = Object.values(granted).every(
+          (status) => status === PermissionsAndroid.RESULTS.GRANTED
+        );
+
+        if (!allGranted) {
+          Alert.alert('bluetooth Permissions', 'Please grant all required permissions.');
+        }
+      }
+    } catch (error) {
+      console.error('[Permission Error]', error);
+    }
+  };
+
+  useEffect(() => {
+    requestPermissions();
+  }, []);
+
 
   const addItem = () => {
     const qty = parseInt(quantity);
