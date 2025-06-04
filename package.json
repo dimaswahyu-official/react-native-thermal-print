@@ -10,8 +10,13 @@
     "test": "jest"
   },
   "dependencies": {
+    "@ccdilan/react-native-bluetooth-escpos-printer": "^0.2.0",
+    "@react-native-async-storage/async-storage": "^2.1.2",
+    "@react-navigation/native-stack": "^7.3.14",
     "react": "19.0.0",
-    "react-native": "0.79.2"
+    "react-native": "0.79.2",
+    "react-native-safe-area-context": "^5.4.1",
+    "react-native-screens": "^4.11.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
