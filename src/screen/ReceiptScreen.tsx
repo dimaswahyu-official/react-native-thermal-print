@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Button, Alert, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import {Item, RootStackParamList} from '../../App.tsx';
+import { RootStackParamList} from '../../App.tsx';
 import {useLoadingDialogStore} from '../store/useLoadingStore.ts';
 import {
   connectBluetoothDevice,
@@ -9,6 +9,8 @@ import {
   getSavedDeviceAddress,
   startBluetoothScan,
 } from '../util/bluetooth/BluetoothManager.ts';
+import {printReceipt} from "../util/bluetooth/PrintReceipt.ts";
+import {formatCurrency} from "../util/FormatCurrency.ts";
 // Assuming you have a custom store for showing/loading dialog
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Receipt'>;
@@ -25,13 +27,14 @@ const ReceiptScreen: React.FC<Props> = ({ route }) => {
   useEffect(() => {
     async function loadConnection() {
       const savedAddress = await getSavedDeviceAddress();
+      console.log(JSON.stringify(items));
       if (savedAddress) {
         setConnectedDeviceAddress(savedAddress);
         setIsConnected(true);
       }
     }
     loadConnection();
-  }, []);
+  }, [items]);
 
   const startBluetooth = async () => {
     try {
@@ -44,7 +47,7 @@ const ReceiptScreen: React.FC<Props> = ({ route }) => {
 
   const handleConnect = async (device: any) => {
     try {
-      showLoadingDialog("Connecting...");
+      showLoadingDialog('connecting...');
       const address = await connectBluetoothDevice(device);
       console.log('Connected device address:', address); // Debugging line
       setConnectedDeviceAddress(address);
@@ -77,7 +80,7 @@ const ReceiptScreen: React.FC<Props> = ({ route }) => {
         // Print the receipt here (replace this with your print function)
         console.log('Receipt details:', items);
         // Example: Send items to the print function with the connected address
-        await printReceipt(items, connectedDeviceAddress);
+        await printReceipt(items,connectedDeviceAddress,handleDisconnect,handleConnect);
       } catch (error) {
         console.error('Print error:', error);
         Alert.alert('Error', 'Failed to print receipt.');
@@ -85,13 +88,6 @@ const ReceiptScreen: React.FC<Props> = ({ route }) => {
     } else {
       Alert.alert('Bluetooth Not Connected', 'Please connect to a printer first.');
     }
-  };
-
-  const printReceipt = async (items: Item[], deviceAddress: any) => {
-    // Replace with actual printing logic
-    console.log('Printing receipt for device:', deviceAddress);
-    console.log('Items:', items);
-    // Implement your actual receipt printing logic here using BluetoothEscposPrinter methods
   };
 
   return (
@@ -104,7 +100,7 @@ const ReceiptScreen: React.FC<Props> = ({ route }) => {
         keyExtractor={(_, i) => i.toString()}
         renderItem={({ item }) => (
           <Text style={styles.item}>
-            {item.productName} - {item.quantity} x {item.price} = {item.total}
+            {item.productName} - {item.quantity} x {formatCurrency(item.price)} = {formatCurrency(item.total)}
           </Text>
         )}
       />
@@ -124,7 +120,7 @@ const ReceiptScreen: React.FC<Props> = ({ route }) => {
       {isConnected && (
         <>
           <Button title="Disconnect Printer" onPress={handleDisconnect} />
-          <Button title="Print Sample Text" onPress={() => printReceipt([{ productName: 'Sample', quantity: 1, price: 5.0, total: 5.0 }], connectedDeviceAddress)} />
+          {/*<Button title="Print Sample Text" onPress={() => printReceipt([{ productName: 'Sample', quantity: 1, price: 5.0, total: 5.0 }])} />*/}
           <Button title="Print Receipt" onPress={handlePrint} />
         </>
       )}

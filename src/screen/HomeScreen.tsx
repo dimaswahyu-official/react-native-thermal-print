@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, TextInput, Button, FlatList, StyleSheet, Platform, PermissionsAndroid, Alert} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, Item } from '../../App';
+import {formatCurrency} from '../util/FormatCurrency.ts';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -80,13 +81,14 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         style={styles.input}
       />
       <Button title="Add Item" onPress={addItem} />
+      <Button title="Void All" onPress={()=>{setItems([])}} color={'red'} />
 
       <FlatList
         data={items}
         keyExtractor={(_, i) => i.toString()}
         renderItem={({ item }) => (
           <Text style={styles.item}>
-            {item.productName} - {item.quantity} x {item.price} = {item.total}
+            {item.productName} - {item.quantity} x {formatCurrency(item.price.toString())} = {formatCurrency(item.total.toString())}
           </Text>
         )}
       />
