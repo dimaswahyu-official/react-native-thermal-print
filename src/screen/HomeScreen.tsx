@@ -44,11 +44,9 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     const qty = parseInt(quantity);
     const prc = parseFloat(price);
     if (!productName || isNaN(qty) || isNaN(prc)) return;
-
     const total = qty * prc;
     const newItem: Item = { productName, quantity: qty, price: prc, total };
     setItems([...items, newItem]);
-
     setProductName('');
     setQuantity('');
     setPrice('');

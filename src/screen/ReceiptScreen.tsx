@@ -17,7 +17,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Receipt'>;
 
 const ReceiptScreen: React.FC<Props> = ({ route }) => {
   const { items } = route.params;
-  const totalAmount = items.reduce((acc, item) => acc + item.total, 0);
+  const totalAmount = items.reduce((acc:any, item:any) => acc + item.total, 0);
 
   const [isConnected, setIsConnected] = useState(false);
   const [connectedDeviceAddress, setConnectedDeviceAddress] = useState<string | null>(null);
