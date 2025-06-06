@@ -100,7 +100,7 @@ const ReceiptScreen: React.FC<Props> = ({ route }) => {
         keyExtractor={(_, i) => i.toString()}
         renderItem={({ item }) => (
           <Text style={styles.item}>
-            {item.productName} - {item.quantity} x {formatCurrency(item.price)} = {formatCurrency(item.total)}
+            {item.productName} - {item.quantity} x {formatCurrency(item.price.toString())} = {formatCurrency(item.total.toString())}
           </Text>
         )}
       />
