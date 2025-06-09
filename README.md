@@ -1,97 +1,96 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-# Getting Started
+# Thermal Printer Helper
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+This repository is designed to help you easily interact with a **thermal printer** in a React Native app. It allows you to input product names, quantities, and prices, and dynamically print them with a clean and easy-to-read format. 
 
-## Step 1: Start Metro
+I’ve made it simple for you to use and customize the functionality to suit your needs. The features of this project include **scanning**, **connecting**, **disconnecting**, and **printing** via Bluetooth.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Features
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- **Scan for Bluetooth Devices**: Automatically scan and detect Bluetooth printers.
+- **Connect to Printer**: Connect to a thermal printer using Bluetooth.
+- **Disconnect from Printer**: Disconnect from the thermal printer when done.
+- **Print Receipts**: Print receipts with formatted product information, including product name, quantity, price, and total.
 
-```sh
-# Using npm
-npm start
+## How to Use
 
-# OR using Yarn
-yarn start
+### 1. **Install Dependencies**
+
+This project uses `@ccdilan/react-native-bluetooth-escpos-printer` to interact with the thermal printer.
+
+To install the necessary dependencies, run:
+
+```bash
+npm install @ccdilan/react-native-bluetooth-escpos-printer
 ```
 
-## Step 2: Build and run your app
+### 2. **Set Permissions in `AndroidManifest.xml`**
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+Make sure to set the **Bluetooth permissions** in your `AndroidManifest.xml`. Without these permissions, the app will not be able to scan or connect to Bluetooth devices.
 
-### Android
+Open `android/app/src/main/AndroidManifest.xml` and add the following permissions:
 
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+```xml
+<uses-permission android:name="android.permission.BLUETOOTH" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" android:maxSdkVersion="31"/>
+<uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:maxSdkVersion="31"/>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 ```
 
-### iOS
+These permissions are necessary for **Bluetooth scanning** and **connecting** to devices.
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+### 3. **Usage in Your App**
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+- **Scanning for Devices**: You can scan for available Bluetooth devices that are capable of printing using the app.
+  
+- **Connecting to the Printer**: After scanning, connect to your printer by selecting it.
 
-```sh
-bundle install
+- **Disconnecting**: You can disconnect from the printer when done.
+
+- **Dynamic Printing**: You can input product details like name, quantity, and price dynamically, and the app will generate a receipt with a simple layout.
+
+### Example Usage:
+
+```tsx
+import { connectBluetoothDevice, startBluetoothScan, disconnectBluetoothDevice } from './bluetoothManager';
+
+const startScan = async () => {
+  const devices = await startBluetoothScan();
+  console.log('Available Devices:', devices);
+};
+
+const connectToDevice = async (device) => {
+  await connectBluetoothDevice(device);
+  console.log(`Connected to ${device.name}`);
+};
+
+const disconnectDevice = async () => {
+  await disconnectBluetoothDevice();
+  console.log('Disconnected from the printer');
+};
 ```
 
-Then, and every time you update your native dependencies, run:
+### 4. **Customization**
 
-```sh
-bundle exec pod install
-```
+Feel free to customize the receipt layout, the columns for product name, quantity, and price, as well as the font style, according to your needs. This project is designed to be easily configurable, so you can adjust the formatting to match your printer's specifications.
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## Dependencies
 
-```sh
-# Using npm
-npm run ios
+This repository uses the following dependencies:
 
-# OR using Yarn
-yarn ios
-```
+- `@ccdilan/react-native-bluetooth-escpos-printer`: A library to handle Bluetooth communication with thermal printers.
+  
+  **Install it by running**:
+  
+  ```bash
+  npm install @ccdilan/react-native-bluetooth-escpos-printer
+  ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## Troubleshooting
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+If you encounter any issues with Bluetooth scanning, ensure that Bluetooth is enabled on your device and that the necessary permissions are granted. Additionally, make sure your printer is paired with your Android device.
 
-## Step 3: Modify your app
+## License
 
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+This repository is open-source and available under the [MIT License](LICENSE).
